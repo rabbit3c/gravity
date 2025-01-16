@@ -1,7 +1,7 @@
 class GravitationalObject {
-    static G = 1/*6.67e-11*/
+    static G = 8e-2/*6.67e-11*/
 
-    constructor (mass, radius, color, x, y, vx, vy) {
+    constructor(mass, radius, color, x, y, vx, vy) {
         this.mass = mass;
         this.radius = radius;
         this.color = color;
@@ -9,13 +9,29 @@ class GravitationalObject {
         this.velocity = new Velocity(vx, vy);
     }
 
-    calculate(g2) {
-        let distance = this.position.distance(g2.position)
+    calculate(objects) {
+        for (let g of objects) {
+            if (g == this) continue;
 
-        let a = GravitationalObject.G * g2.mass / (distance.value()**2)
-        let acceleration = distance.mult(a / distance.value())
+            let distance = this.position.distance(g.position);
 
-        this.velocity.calculate(acceleration)
+            if (this instanceof Rocket) {
+                if (distance.value() <= g.radius) { // Check for Collision
+                    let distanceAfter = distance.copy();
+                    distanceAfter.add(this.velocity.inverse());
+
+                    if (distance.value() >= distanceAfter.value()) { // Check if moving away
+                        this.velocity = g.velocity.copy();
+                        break;
+                    }
+                }
+            }
+
+            let a = GravitationalObject.G * g.mass / (distance.value() ** 2);
+            let acceleration = distance.mult(a / distance.value());
+
+            this.velocity.calculate(acceleration);
+        }
         this.position.calculate(this.velocity);
         this.draw();
     }
