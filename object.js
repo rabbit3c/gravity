@@ -16,19 +16,19 @@ class GravitationalObject {
             let distance = this.position.distance(g.position);
 
             if (this instanceof Rocket) {
-                if (distance.value() <= g.radius) { // Check for Collision
+                if (distance.magnitude() <= g.radius) { // Check for Collision
                     let distanceAfter = distance.copy();
-                    distanceAfter.add(this.velocity.inverse());
+                    distanceAfter.add(this.velocity);
 
-                    if (distance.value() >= distanceAfter.value()) { // Check if moving away
+                    if (distance.magnitude() >= distanceAfter.magnitude()) { // Check if moving away
                         this.velocity = g.velocity.copy();
                         break;
                     }
                 }
             }
 
-            let a = GravitationalObject.G * g.mass / (distance.value() ** 2);
-            let acceleration = distance.mult(a / distance.value());
+            let a = GravitationalObject.G * g.mass / (distance.magnitude() ** 2);
+            let acceleration = distance.normalize().mult(-a);
 
             this.velocity.calculate(acceleration);
         }

@@ -1,8 +1,9 @@
 class Rocket extends GravitationalObject {
-    constructor (x, y) {
-        super(1, 15, "#FF0000", x, y, 0, 0);
+    constructor (x, y, focus, vx, vy) {
+        super(1, 15, "#FF0000", x, y, vx, vy);
         this.direction = 270;
         this.keyMap = {65: false, 68: false, 87: false};
+        this.trajectory = new Trajectory(this, focus);
         document.onkeydown = document.onkeyup = this.keylogger.bind(this);
     }
 
@@ -24,6 +25,7 @@ class Rocket extends GravitationalObject {
 
     draw() {
         setFillColor(this.color);
-        fillIsoTriangleRotate(this.position.x, this.position.y, this.radius * 0.7, this.radius, this.direction - 270);
+        fillRocket(this.position.x, this.position.y, this.radius * 0.7, this.radius, this.direction - 90);
+        this.trajectory.draw();
     }
 }

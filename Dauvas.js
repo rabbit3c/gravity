@@ -130,6 +130,28 @@ function fillIsoTriangleRotate(x,y,a,h,alpha){
 	fillTriangleRotate(x-0.5*a, y, x+0.5*a, y,x,y-h,alpha);
 }
 
+function fillRocket(x, y, a, h, alpha) {
+	var xs=x
+	var ys=y
+	var x1s=0.5*a, x2s=-0.5*a, x3s=0; //Koordinaten bzg. Schwerpunkt
+	var y1s=0, y2s=0, y3s=h; //Koordinaten bzg. Schwerpunkt
+	var alph=alpha*Math.PI/180; 
+	var x1srot=Math.cos(alph)*x1s-Math.sin(alph)*y1s; //Anwendung Drehmatrix
+	var y1srot=Math.sin(alph)*x1s+Math.cos(alph)*y1s;
+	var x2srot=Math.cos(alph)*x2s-Math.sin(alph)*y2s;
+	var y2srot=Math.sin(alph)*x2s+Math.cos(alph)*y2s;
+	var x3srot=Math.cos(alph)*x3s-Math.sin(alph)*y3s;
+	var y3srot=Math.sin(alph)*x3s+Math.cos(alph)*y3s;
+	var x1rot=x1srot+xs, x2rot=x2srot+xs, x3rot=x3srot+xs; //Koordinaten der neuen Punkte
+	var y1rot=y1srot+ys, y2rot=y2srot+ys, y3rot=y3srot+ys;
+	ctx.beginPath();
+	ctx.moveTo(x1rot,y1rot);
+	ctx.lineTo(x2rot,y2rot);
+	ctx.lineTo(x3rot,y3rot);
+	ctx.closePath();
+	ctx.fill();
+}
+
 function triangleRotate(x1,y1,x2,y2,x3,y3,alpha){		//rotiert um den Schwerpunkt
 	var xs=(x1+x2+x3)/3;
 	var ys=(y1+y2+y3)/3;
@@ -378,7 +400,19 @@ function ovalRotate(x, y, rx, ry, alpha){
 	ctx.translate(x,y);	
 	ctx.rotate(alpha*Math.PI/180);
 	ctx.scale(1,ry/rx);
+	ctx.beginPath();
     ctx.arc(0, 0, rx, 0, 2 * Math.PI, false);
+	ctx.restore();
+	ctx.stroke();
+}
+
+function ellipseRotate(x, y, c, a, b, alpha) {
+	alpha *= Math.PI / 180;		
+	ctx.save();
+	ctx.translate(x, y);	
+	ctx.rotate(alpha + Math.PI);
+	ctx.beginPath();
+	ctx.ellipse(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha), c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), a, b, 0, 0, 2 * Math.PI); // Affinität für Rotieren
 	ctx.restore();
 	ctx.stroke();
 }
@@ -421,6 +455,8 @@ function poly(flatArray){		// e.g. [0,0,100,100,50,0]
 // Bildschirm ******************************************************************************************
 function clearScreen(){
 	ctx.clearRect(0,0,xmax,ymax);
+	setFillColor("#000000");
+	fillRect(0, 0, xmax, ymax);
 }
 
 function write(string) {

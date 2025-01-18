@@ -10,6 +10,6 @@ class Position {
     }
 
     distance(p2) {
-        return new Vector(p2.x - this.x, p2.y - this.y);
+        return new Vector(this.x - p2.x, this.y - p2.y);
     }
 }

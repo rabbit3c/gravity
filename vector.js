@@ -4,7 +4,7 @@ class Vector {
         this.y = y;
     }
 
-    value() {
+    magnitude() {
         return Math.sqrt(this.x**2 + this.y**2);
     }
 
@@ -14,15 +14,28 @@ class Vector {
         return new Vector(x, y);
     }
 
+    add(vector) {
+        this.x += vector.x;
+        this.y += vector.y;
+        return this;
+    }
+
+    minus(vector) {
+        this.x -= vector.x;
+        this.y -= vector.y;
+        return this;
+    }
+
     mult(n) {
         this.x *= n;
         this.y *= n;
         return this;
     }
 
-    add(vector) {
-        this.x += vector.x;
-        this.y += vector.y;
+    divide(n) {
+        this.x /= n;
+        this.y /= n;
+        return this;
     }
 
     copy() {
@@ -31,5 +44,22 @@ class Vector {
 
     inverse() {
         return new Vector(- this.x, - this.y);
+    }
+
+    crossProduct(vector) {
+        return this.x * vector.y - this.y * vector.x;
+    }
+
+    crossProductScalar(n) {
+        return new Vector(this.y * n, - this.x * n);
+    }
+
+    angle() {
+        return Math.atan2(this.y, this.x) / Math.PI * 180;
+    }
+
+    normalize() {
+        if (this.magnitude() == 0) return this.copy();
+        return this.copy().divide(this.magnitude());
     }
 }
