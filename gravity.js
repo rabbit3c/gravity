@@ -1,6 +1,5 @@
-let dt = 0.01;
-
 const canvas = new Canvas()
+const time = new Time()
 
 const earth = new GravitationalObject(1000000, 250, "#0000FF", canvas.width / 2, canvas.height / 2, 0, 0);
 const rocket = new Rocket(canvas.width / 2, canvas.height / 2 - 250, earth, 0, 0);
@@ -15,6 +14,7 @@ function tick() {
     canvas.clearScreen();
     rocket.calculate(objects);
     earth.draw();
+    time.draw();
 }
 
 let interval = setInterval(tick, 1);

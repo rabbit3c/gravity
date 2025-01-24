@@ -4,8 +4,8 @@ class Velocity extends Vector {
     }
 
     calculate(acceleration) {
-        this.x += acceleration.x * dt;
-        this.y += acceleration.y * dt;
+        this.x += acceleration.x * time.dt();
+        this.y += acceleration.y * time.dt();
     }
 
     copy() {

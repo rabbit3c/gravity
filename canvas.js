@@ -10,13 +10,13 @@ class Canvas {
         this.height = window.innerHeight;	
         this.ctx.canvas.width=this.width;
 	    this.ctx.canvas.height=this.height;	
-        
-        document.addEventListener("wheel", this.changeZoom.bind(this))
+
+        document.onwheel = this.changeZoom.bind(this)
     }
 
-    changeZoom(event) {
-        this.zoom *= (1 + event.deltaY * 0.0003);
-        if (this.zoom < 0.01) this.zoom = 0.01;
+    changeZoom(e) {
+        this.zoom *= (1 + e.deltaY * 0.0003);
+        if (this.zoom < 0.05) this.zoom = 0.05;
         if (this.zoom > 10) this.zoom = 10;
     }
     
@@ -39,6 +39,13 @@ class Canvas {
     }
 
     translate(x, y) {
+        x += (this.width / 2 - this.focus.position.x); // calculate coordinates so that the focus object is in the center
+        y += (this.height / 2 - this.focus.position.y);
+        this.ctx.translate(x, y);
+    }
+
+    translateScale(x, y) {
+        this.scale();
         x += (this.width / 2 / this.zoom - this.focus.position.x); // calculate coordinates so that the focus object is in the center
         y += (this.height / 2 / this.zoom - this.focus.position.y);
         this.ctx.translate(x, y);
@@ -53,7 +60,6 @@ class Canvas {
         let x2 =- 0.5 * a;
         alpha *= Math.PI/180; 
         this.ctx.save();
-        this.scale();
         this.translate(x, y);
         this.ctx.rotate(alpha);
         this.ctx.beginPath();
@@ -73,8 +79,7 @@ class Canvas {
     drawEllipse(x, y, c, a, b, alpha) {
         alpha *= Math.PI / 180;		
         this.ctx.save();
-        this.scale();	
-        this.translate(x, y);
+        this.translateScale(x, y);
         this.ctx.rotate(alpha + Math.PI);
         this.ctx.beginPath();
         this.ctx.ellipse(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha), c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), a, b, 0, 0, 2 * Math.PI); // Affinität für Rotieren
@@ -84,8 +89,7 @@ class Canvas {
 
     fillCircle(x,y,a){
         this.ctx.save();
-        this.scale();
-        this.translate(x, y);
+        this.translateScale(x, y);
         this.ctx.beginPath();
         this.ctx.arc(0, 0, a, 0, Math.PI * 2, true);
         this.ctx.closePath();

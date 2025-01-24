@@ -5,8 +5,8 @@ class Position {
     }
 
     calculate(velocity) {
-        this.x += velocity.x * dt;
-        this.y += velocity.y * dt;
+        this.x += velocity.x * time.dt();
+        this.y += velocity.y * time.dt();
     }
 
     distance(p2) {

@@ -1,6 +1,6 @@
 class Rocket extends GravitationalObject {
     constructor (x, y, focus, vx, vy) {
-        super(1, 15, "#FF0000", x, y, vx, vy);
+        super(1, 12, "#FF0000", x, y, vx, vy);
         this.direction = 270;
         this.keyMap = {65: false, 68: false, 87: false};
         this.trajectory = new Trajectory(this, focus);
