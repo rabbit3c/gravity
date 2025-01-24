@@ -16,7 +16,7 @@ class Canvas {
 
     changeZoom(e) {
         this.zoom *= (1 + e.deltaY * 0.0003);
-        if (this.zoom < 0.05) this.zoom = 0.05;
+        if (this.zoom < 0.01) this.zoom = 0.01;
         if (this.zoom > 10) this.zoom = 10;
     }
     

@@ -23,12 +23,12 @@ class Rocket extends GravitationalObject {
             this.throttle += 0.001;
             if (this.throttle > 1) this.throttle = 1;
         }
-        if (this.keyMap[87]) this.accelerate(0.02 * this.throttle);
+        if (this.keyMap[87]) this.accelerate(2 * this.throttle);
         super.calculate(objects);
     }
 
     accelerate(value) {
-        let vector = Vector.create(value, this.direction * Math.PI / 180);
+        let vector = Vector.create(value * time.dt(), this.direction * Math.PI / 180);
         this.velocity.add(vector);
     }
 
