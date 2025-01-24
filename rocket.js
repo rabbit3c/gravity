@@ -33,10 +33,10 @@ class Rocket extends GravitationalObject {
     }
 
     draw() {
-        setFillColor(this.color);
-        fillRocket(this.position.x, this.position.y, this.radius * 0.7, this.radius, this.direction - 90);
-        setFillColor("#FFFFFF");
-        drawText(10, 20, "Throttle: " + this.throttle.toFixed(2), 15);
+        canvas.setFillColor(this.color);
+        canvas.drawRocket(this.position.x, this.position.y, this.radius * 0.7, this.radius, this.direction - 90);
+        canvas.setFillColor("#FFFFFF");
+        canvas.drawText(10, 20, "Throttle: " + this.throttle.toFixed(2), 15);
         this.trajectory.draw();
     }
 }
