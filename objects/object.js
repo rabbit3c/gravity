@@ -16,7 +16,7 @@ class GravitationalObject {
             let distance = this.position.distance(g.position);
 
             if (this instanceof Rocket) {
-                if (distance.magnitude() <= g.radius) { // Check for Collision
+                if (distance.magnitude() - this.radius / 2 <= g.radius) { // Check for Collision
                     let distanceAfter = distance.copy();
                     distanceAfter.add(this.velocity);
 

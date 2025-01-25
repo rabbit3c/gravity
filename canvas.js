@@ -1,17 +1,18 @@
 class Canvas {
-    constructor () {
+    constructor() {
         this.zoom = 1;
         this.focus = null;
 
-        let c = document.getElementById("myCanvas");
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+
+        const c = document.getElementById("canvas");
         this.ctx = c.getContext("2d");
 
-        this.width = window.innerWidth;						
-        this.height = window.innerHeight;	
-        this.ctx.canvas.width=this.width;
-	    this.ctx.canvas.height=this.height;	
+        this.ctx.canvas.width = this.width;
+        this.ctx.canvas.height = this.height;
 
-        document.onwheel = this.changeZoom.bind(this)
+        document.onwheel = this.changeZoom.bind(this);
     }
 
     changeZoom(e) {
@@ -19,28 +20,28 @@ class Canvas {
         if (this.zoom < 0.01) this.zoom = 0.01;
         if (this.zoom > 10) this.zoom = 10;
     }
-    
+
     setCenter(center) {
         this.focus = center;
     }
 
-    setFillColor(farbe){
+    setFillColor(farbe) {
         this.ctx.fillStyle = farbe;
     }
 
-    setLineColor(farbe){
+    setLineColor(farbe) {
         this.ctx.strokeStyle = farbe;
     }
 
-    clearScreen(){
-        this.ctx.clearRect(0,0, canvas.width, canvas.height);
+    clearScreen() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
         this.setFillColor("#000000");
-        this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+        this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
     translate(x, y) {
-        x += (this.width / 2 - this.focus.position.x); // calculate coordinates so that the focus object is in the center
-        y += (this.height / 2 - this.focus.position.y);
+        x = x * this.zoom + (this.width / 2 - this.focus.position.x * this.zoom); // calculate coordinates so that the focus object is in the center
+        y = y * this.zoom + (this.height / 2 - this.focus.position.y * this.zoom);
         this.ctx.translate(x, y);
     }
 
@@ -55,17 +56,17 @@ class Canvas {
         this.ctx.scale(this.zoom, this.zoom);
     }
 
-    drawRocket(x, y, a, h, alpha) {
+    drawSymbolRocket(x, y, a, h, alpha) {
         let x1 = 0.5 * a;
-        let x2 =- 0.5 * a;
-        alpha *= Math.PI/180; 
+        let x2 = - 0.5 * a;
+        alpha *= Math.PI / 180;
         this.ctx.save();
         this.translate(x, y);
         this.ctx.rotate(alpha);
         this.ctx.beginPath();
-        this.ctx.moveTo(x1, 0);
-        this.ctx.lineTo(x2, 0);
-        this.ctx.lineTo(0, h);
+        this.ctx.moveTo(x1, h / 8 * 3);
+        this.ctx.lineTo(x2, h / 8 * 3);
+        this.ctx.lineTo(0, - h / 8 * 5);
         this.ctx.closePath();
         this.ctx.fill();
         this.ctx.restore();
@@ -77,7 +78,7 @@ class Canvas {
     }
 
     drawEllipse(x, y, c, a, b, alpha) {
-        alpha *= Math.PI / 180;		
+        alpha *= Math.PI / 180;
         this.ctx.save();
         this.translateScale(x, y);
         this.ctx.rotate(alpha + Math.PI);
@@ -87,7 +88,7 @@ class Canvas {
         this.ctx.stroke();
     }
 
-    fillCircle(x,y,a){
+    fillCircle(x, y, a) {
         this.ctx.save();
         this.translateScale(x, y);
         this.ctx.beginPath();
@@ -95,5 +96,36 @@ class Canvas {
         this.ctx.closePath();
         this.ctx.fill();
         this.ctx.restore();
+    }
+
+    drawImage(image, sx, sy, sWidth, sHeight, x, y, width, height, alpha = 0) {
+        // Draw and scale the image on a temporary canvas
+        const tempCanvas = document.createElement("canvas");
+        const tempCtx = tempCanvas.getContext("2d");
+
+        tempCanvas.width = width * this.zoom;
+        tempCanvas.height = height * this.zoom;
+
+        tempCtx.imageSmoothingEnabled = false;
+        tempCtx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, tempCanvas.width, tempCanvas.height);
+
+        // Display the image on the canvas
+        this.ctx.save();
+        this.translate(x - width / 2, y - height / 2);
+
+        this.ctx.translate(width / 2 * this.zoom, height / 2 * this.zoom); // Translate to the image's center
+        this.ctx.rotate(alpha * (Math.PI / 180)); // Convert degrees to radians
+        this.ctx.translate(-width / 2 * this.zoom, -height / 2 * this.zoom); // Translate back
+
+        this.ctx.drawImage(tempCanvas, 0, 0);
+        this.ctx.restore();
+    }
+
+    drawRocket(image, sx, sy, sWidth, sHeight, x, y, width, height, alpha) {
+        if (this.zoom > 0.7) {
+            this.drawImage(image, sx, sy, sWidth, sHeight, x, y, width, height, alpha);
+            return;
+        }
+        this.drawSymbolRocket(x, y, width / 1.5, height / 2, alpha);
     }
 }

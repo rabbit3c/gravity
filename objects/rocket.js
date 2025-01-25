@@ -1,10 +1,14 @@
 class Rocket extends GravitationalObject {
     constructor (x, y, focus, vx, vy) {
-        super(1, 12, "#FF0000", x, y, vx, vy);
+        super(1, 24, "#61858D", x, y, vx, vy);
         this.direction = 270;
         this.keyMap = {65: false, 68: false, 87: false};
         this.trajectory = new Trajectory(this, focus);
         this.throttle = 1;
+
+        this.image = new Image();
+        this.image.src = "images/rocket.png";
+
         document.onkeydown = document.onkeyup = this.keylogger.bind(this);
     }
 
@@ -33,10 +37,10 @@ class Rocket extends GravitationalObject {
     }
 
     draw() {
+        this.trajectory.draw();
         canvas.setFillColor(this.color);
-        canvas.drawRocket(this.position.x, this.position.y, this.radius * 0.7, this.radius, this.direction - 90);
+        canvas.drawRocket(this.image, 11, 5, 20, 49, this.position.x, this.position.y, this.radius / 49 * 20 * 2, this.radius * 2, this.direction + 90);
         canvas.setFillColor("#FFFFFF");
         canvas.drawText(10, 20, "Throttle: " + this.throttle.toFixed(2), 15);
-        this.trajectory.draw();
     }
 }
