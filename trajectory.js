@@ -28,6 +28,6 @@ class Trajectory {
     draw() {
         this.calculate();
         canvas.setLineColor("#FFFFFF");
-        canvas.drawEllipse(this.focus.position.x, this.focus.position.y, this.c, this.a, this.b, this.e.angle());
+        canvas.drawOrbit(this.focus.position.x, this.focus.position.y, this.c, this.a, this.b, this.e.angle());
     }
 }

@@ -5,6 +5,7 @@ class Rocket extends GravitationalObject {
         this.keyMap = {65: false, 68: false, 87: false};
         this.trajectory = new Trajectory(this, focus);
         this.throttle = 1;
+        this.landed = true;
 
         this.image = new Image();
         this.image.src = "images/rocket.png";
@@ -37,7 +38,7 @@ class Rocket extends GravitationalObject {
     }
 
     draw() {
-        this.trajectory.draw();
+        if (!this.landed) this.trajectory.draw();
         canvas.setFillColor(this.color);
         canvas.drawRocket(this.image, 11, 5, 20, 49, this.position.x, this.position.y, this.radius / 49 * 20 * 2, this.radius * 2, this.direction + 90);
         canvas.setFillColor("#FFFFFF");

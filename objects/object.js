@@ -22,8 +22,10 @@ class GravitationalObject {
 
                     if (distance.magnitude() >= distanceAfter.magnitude()) { // Check if moving away
                         this.velocity = g.velocity.copy();
+                        this.landed = true;
                         break;
                     }
+                    this.landed = false;
                 }
             }
 

@@ -77,15 +77,27 @@ class Canvas {
         this.ctx.fillText(text, x, y);
     }
 
-    drawEllipse(x, y, c, a, b, alpha) {
+    drawOrbit(x, y, c, a, b, alpha) {
         alpha *= Math.PI / 180;
         this.ctx.save();
         this.translateScale(x, y);
         this.ctx.rotate(alpha + Math.PI);
+        this.setFillColor("#00FFFF");
+        this.drawMarker(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha) + a, c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), "Apogee");
+        this.setFillColor("#FFFF00");
+        this.drawMarker(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha) - a, c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), "Perigee");
         this.ctx.beginPath();
         this.ctx.ellipse(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha), c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), a, b, 0, 0, 2 * Math.PI); // Affinität für Rotieren
         this.ctx.restore();
         this.ctx.stroke();
+    }
+
+    drawMarker(x, y, text) {
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, 3, 0, Math.PI * 2, true);
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.drawText(x + 5, y, text, 8);
     }
 
     fillCircle(x, y, a) {
