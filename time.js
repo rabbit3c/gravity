@@ -1,23 +1,28 @@
 class Time {
     constructor () {
         this.baseTime = 0.01;
-        this.timewarp = 1;
+        this.options = [1, 2, 5, 10, 100, 1000];
+        this.index = 0;
         document.addEventListener("keydown", this.changeTimewarp.bind(this));
     }
 
     dt() {
-        return this.baseTime * this.timewarp;
+        return this.baseTime * this.timewarp();
+    }
+
+    timewarp() {
+        return this.options[this.index];
     }
 
     changeTimewarp(e) {
         switch (e.keyCode) {
             case 190:
-                this.timewarp += 1;
-                if (this.timewarp > 10) this.timewarp = 10;
+                this.index += 1;
+                if (this.index >= this.options.length) this.index = this.options.length - 1;
                 break
             case 188:
-                this.timewarp -= 1;
-                if (this.timewarp < 1) this.timewarp = 1;
+                this.index -= 1;
+                if (this.index < 0) this.index = 0;
                 break
             default:
                 break
@@ -26,6 +31,6 @@ class Time {
 w
     draw() {
         canvas.setFillColor("#FFFFFF");
-        canvas.drawText(10, 50, "Timewarp: " + this.timewarp, 15);
+        canvas.drawText(10, 50, "Timewarp: " + this.timewarp(), 15);
     }
 }
