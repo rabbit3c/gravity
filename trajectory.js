@@ -1,7 +1,7 @@
 class Trajectory {
-    constructor (object, focus) {
+    constructor (object) {
         this.object = object;
-        this.focus = focus;
+        this.focus = null;
         this.a = 0;
         this.b = 0;
         this.e = null;
@@ -12,12 +12,13 @@ class Trajectory {
     calculate() {
         const distance = this.object.position.distance(this.focus.position); 
         const r = distance.magnitude();
-        const v = this.object.velocity.magnitude();
-        const h = distance.crossProduct(this.object.velocity);
+        const relativeVelocity = this.object.velocity.relative(this.focus.velocity);
+        const v = relativeVelocity.magnitude();
+        const h = distance.crossProduct(relativeVelocity);
         const µ = GravitationalObject.G * this.focus.mass;
 
         const distanceNormalized = distance.normalize();
-        const d = this.object.velocity.crossProductScalar(h).divide(µ);
+        const d = relativeVelocity.crossProductScalar(h).divide(µ);
 
         this.e = d.copy().minus(distanceNormalized);
         this.a = µ * r / (2 * µ - r * v ** 2);
@@ -26,6 +27,7 @@ class Trajectory {
     }
 
     draw() {
+        if (this.focus == null) return;
         this.calculate();
         canvas.setLineColor("#FFFFFF");
         canvas.drawOrbit(this.focus.position.x, this.focus.position.y, this.c, this.a, this.b, this.e.angle());

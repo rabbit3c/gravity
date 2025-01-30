@@ -11,4 +11,8 @@ class Velocity extends Vector {
     copy() {
         return new Velocity(this.x, this.y);
     }
+
+    relative(v2) {
+        return new Velocity(this.x - v2.x, this.y - v2.y);
+    }
 }

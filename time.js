@@ -1,7 +1,7 @@
 class Time {
     constructor () {
-        this.baseTime = 0.01;
-        this.options = [1, 2, 5, 10, 100, 1000];
+        this.baseTime = 0.001;
+        this.options = [1, 2, 5, 10, 50, 100, 500, 1000];
         this.index = 0;
         document.addEventListener("keydown", this.changeTimewarp.bind(this));
     }

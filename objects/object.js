@@ -1,5 +1,5 @@
 class GravitationalObject {
-    static G = 8e-2/*6.67e-11*/
+    static G = 6.67e-11/*6.67e-11*/
 
     constructor(mass, radius, color, x, y, vx, vy) {
         this.mass = mass;
@@ -10,6 +10,9 @@ class GravitationalObject {
     }
 
     calculate(objects) {
+        let maxA = 0;
+        let strongestObject = null;
+
         for (let g of objects) {
             if (g == this) continue;
 
@@ -18,7 +21,7 @@ class GravitationalObject {
             if (this instanceof Rocket) {
                 if (distance.magnitude() - this.radius / 2 <= g.radius) { // Check for Collision
                     let distanceAfter = distance.copy();
-                    distanceAfter.add(this.velocity);
+                    distanceAfter.add(this.velocity.relative(g.velocity));
 
                     if (distance.magnitude() >= distanceAfter.magnitude()) { // Check if moving away
                         this.velocity = g.velocity.copy();
@@ -33,8 +36,15 @@ class GravitationalObject {
             let acceleration = distance.normalize().mult(-a);
 
             this.velocity.calculate(acceleration);
+
+            if (a > maxA) {
+                maxA = a;
+                strongestObject = g;
+            }
         }
         this.position.calculate(this.velocity);
+        this.trajectory.focus = strongestObject;
+        
         this.draw();
     }
 
