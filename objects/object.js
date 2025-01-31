@@ -17,15 +17,21 @@ class GravitationalObject {
             if (g == this) continue;
 
             let distance = this.position.distance(g.position);
+            if (distance.magnitude() == 0) continue;
 
             if (this instanceof Rocket) {
                 if (distance.magnitude() - this.radius / 2 <= g.radius) { // Check for Collision
                     let distanceAfter = distance.copy();
                     distanceAfter.add(this.velocity.relative(g.velocity));
 
-                    if (distance.magnitude() >= distanceAfter.magnitude()) { // Check if moving away
+                    if (distance.magnitude() >= distanceAfter.magnitude()) { // Check if movingw away
+                        if (this.velocity.relative(g.velocity).magnitude() > 10) { //Check if rocket should explode
+                            this.explosion = new Explosion(this.position.x, this.position.y + 1, 2000);
+                        }
+
                         this.velocity = g.velocity.copy();
                         this.landed = true;
+                        strongestObject = g;
                         break;
                     }
                     this.landed = false;
@@ -42,9 +48,9 @@ class GravitationalObject {
                 strongestObject = g;
             }
         }
+
         this.position.calculate(this.velocity);
         if (this.trajectory) this.trajectory.focus = strongestObject;
-        
         this.draw();
     }
 

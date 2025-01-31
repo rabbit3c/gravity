@@ -31,6 +31,6 @@ class Time {
 w
     draw() {
         canvas.setFillColor("#FFFFFF");
-        canvas.drawText(10, 50, "Timewarp: " + this.timewarp(), 15);
+        canvas.drawText(10, 20, "Timewarp: " + this.timewarp(), 15);
     }
 }

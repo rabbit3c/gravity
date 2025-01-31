@@ -16,7 +16,7 @@ function tick() {
     rocket.calculate(objects);
     moon.calculate(objects);
     earth.draw();
-    rocket.drawThrottle();
+    rocket.drawStats();
     time.draw();
 }
 
