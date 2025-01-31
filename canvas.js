@@ -59,10 +59,9 @@ class Canvas {
     drawSymbolRocket(x, y, a, h, alpha) {
         let x1 = 0.5 * a;
         let x2 = - 0.5 * a;
-        alpha *= Math.PI / 180;
         this.ctx.save();
         this.translate(x, y);
-        this.ctx.rotate(alpha);
+        this.ctx.rotate(alpha * Math.PI / 180);
         this.ctx.beginPath();
         this.ctx.moveTo(x1, h / 8 * 3);
         this.ctx.lineTo(x2, h / 8 * 3);
@@ -88,6 +87,34 @@ class Canvas {
         this.drawMarker(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha) - a, c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), "Perigee");
         this.ctx.beginPath();
         this.ctx.ellipse(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha), c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), a, b, 0, 0, 2 * Math.PI); // Affinität für Rotieren
+        this.ctx.restore();
+        this.ctx.stroke();
+    }
+
+    drawHyperbola(x, y, a, b, c, alpha) {
+        alpha *= Math.PI / 180;
+
+        let steps = 1000
+        let mx = - c.x * Math.cos(-alpha) + c.y * Math.sin(-alpha);
+        let my = - c.x * Math.sin(-alpha) - c.y * Math.cos(-alpha);
+
+        this.ctx.save();
+        this.translateScale(x, y);
+        this.ctx.rotate(alpha);
+
+        this.setFillColor("#FFFF00");
+        this.drawMarker(mx + a, my, "Perigee");
+
+        this.ctx.beginPath();
+    
+        for (let i = -steps; i <= steps; i++) {
+            let px = a * Math.cosh(i / Math.abs(steps) * 2);
+            let py = b * Math.sinh(i / Math.abs(steps) * 2);
+
+            py *= steps < 0 ? -1 : 1;
+            this.ctx.lineTo(mx + px, my + py);
+        }
+
         this.ctx.restore();
         this.ctx.stroke();
     }

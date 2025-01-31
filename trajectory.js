@@ -22,7 +22,10 @@ class Trajectory {
 
         this.e = d.copy().minus(distanceNormalized);
         this.a = µ * r / (2 * µ - r * v ** 2);
-        this.b = this.a * Math.sqrt(1 - this.e.magnitude() ** 2);
+
+        if (this.e.magnitude() < 1) this.b = this.a * Math.sqrt(1 - this.e.magnitude() ** 2);
+        else this.b = this.a * Math.sqrt(this.e.magnitude() ** 2 - 1);
+
         this.c = this.e.copy().mult(this.a);
     }
 
@@ -30,6 +33,7 @@ class Trajectory {
         if (this.focus == null) return;
         this.calculate();
         canvas.setLineColor("#FFFFFF");
-        canvas.drawOrbit(this.focus.position.x, this.focus.position.y, this.c, this.a, this.b, this.e.angle());
+        if (this.e.magnitude() < 1) canvas.drawOrbit(this.focus.position.x, this.focus.position.y, this.c, this.a, this.b, this.e.angle());
+        else canvas.drawHyperbola(this.focus.position.x, this.focus.position.y, this.a, this.b, this.c, this.e.angle());
     }
 }
