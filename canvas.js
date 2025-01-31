@@ -17,7 +17,7 @@ class Canvas {
 
     changeZoom(e) {
         this.zoom *= (1 + e.deltaY * 0.0003);
-        if (this.zoom < 0.01) this.zoom = 0.01;
+        if (this.zoom < 0.001) this.zoom = 0.001;
         if (this.zoom > 10) this.zoom = 10;
     }
 
@@ -94,10 +94,10 @@ class Canvas {
 
     drawMarker(x, y, text) {
         this.ctx.beginPath();
-        this.ctx.arc(x, y, 3, 0, Math.PI * 2, true);
+        this.ctx.arc(x, y, 3 / this.zoom, 0, Math.PI * 2, true);
         this.ctx.closePath();
         this.ctx.fill();
-        this.drawText(x + 5, y, text, 8);
+        this.drawText(x + 5 / this.zoom, y, text, 8 / this.zoom);
     }
 
     fillCircle(x, y, a) {
@@ -131,6 +131,14 @@ class Canvas {
 
         this.ctx.drawImage(tempCanvas, 0, 0);
         this.ctx.restore();
+    }
+
+    drawPlanet(image, sx, sy, sWidth, sHeight, x, y, width, height) {
+        if (this.zoom * width > 12) {
+            this.drawImage(image, sx, sy, sWidth, sHeight, x, y, width, height);
+            return
+        }
+        this.fillCircle(x, y, 12 / 2 / this.zoom); //Fix this
     }
 
     drawRocket(image, sx, sy, sWidth, sHeight, x, y, width, height, alpha) {
