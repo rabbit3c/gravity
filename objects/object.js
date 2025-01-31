@@ -51,7 +51,6 @@ class GravitationalObject {
 
         this.position.calculate(this.velocity);
         if (this.trajectory) this.trajectory.focus = strongestObject;
-        this.draw();
     }
 
     draw() {

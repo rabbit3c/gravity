@@ -19,6 +19,12 @@ class Explosion {
         }
     }
 
+    draw() {
+        for (let object of this.objects) {
+            object.draw();
+        }
+    }
+
     getColor(v) {
         let normalizedV = Math.min(v / (5 ** 4), 1);
 

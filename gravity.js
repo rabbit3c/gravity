@@ -15,9 +15,20 @@ function tick() {
     canvas.clearScreen();
     rocket.calculate(objects);
     moon.calculate(objects);
+}
+
+function draw() {
+    canvas.clearScreen();
+    rocket.draw();
+    moon.draw();
     earth.draw();
     rocket.drawStats();
     time.draw();
+
+    requestAnimationFrame(draw);
 }
 
 let interval = setInterval(tick, 1);
+
+tick();
+draw();
