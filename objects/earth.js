@@ -8,6 +8,6 @@ class Earth extends GravitationalObject {
 
     draw() {
         canvas.setFillColor(this.color);
-        canvas.drawPlanet(this.image, 0, 97, 96, 96, this.position.x, this.position.y, this.radius * 2, this.radius * 2);
+        canvas.drawPlanet(this.image, 0, 97, 96, 96, this.position, this.radius);
     }
 }

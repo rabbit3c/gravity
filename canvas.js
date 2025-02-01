@@ -56,11 +56,11 @@ class Canvas {
         this.ctx.scale(this.zoom, this.zoom);
     }
 
-    drawSymbolRocket(x, y, a, h, alpha) {
+    drawSymbolRocket(position, a, h, alpha) {
         let x1 = 0.5 * a;
         let x2 = - 0.5 * a;
         this.ctx.save();
-        this.translate(x, y);
+        this.translate(position.x, position.y);
         this.ctx.rotate(alpha * Math.PI / 180);
         this.ctx.beginPath();
         this.ctx.moveTo(x1, h / 8 * 3);
@@ -76,10 +76,10 @@ class Canvas {
         this.ctx.fillText(text, x, y);
     }
 
-    drawOrbit(x, y, c, a, b, alpha) {
+    drawOrbit(position, c, a, b, alpha) {
         alpha *= Math.PI / 180;
         this.ctx.save();
-        this.translateScale(x, y);
+        this.translateScale(position.x, position.y);
         this.ctx.rotate(alpha + Math.PI);
         this.setFillColor("#00FFFF");
         this.drawMarker(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha) + a, c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), "Apogee");
@@ -91,7 +91,7 @@ class Canvas {
         this.ctx.stroke();
     }
 
-    drawHyperbola(x, y, a, b, c, alpha) {
+    drawHyperbola(position, a, b, c, alpha) {
         alpha *= Math.PI / 180;
 
         let steps = 1000
@@ -99,7 +99,7 @@ class Canvas {
         let my = - c.x * Math.sin(-alpha) - c.y * Math.cos(-alpha);
 
         this.ctx.save();
-        this.translateScale(x, y);
+        this.translateScale(position.x, position.y);
         this.ctx.rotate(alpha);
 
         this.setFillColor("#FFFF00");
@@ -137,7 +137,7 @@ class Canvas {
         this.ctx.restore();
     }
 
-    drawImage(image, sx, sy, sWidth, sHeight, x, y, width, height, alpha = 0) {
+    drawImage(image, sx, sy, sWidth, sHeight, position, width, height, alpha = 0) {
         // Draw and scale the image on a temporary canvas
         const tempCanvas = document.createElement("canvas");
         const tempCtx = tempCanvas.getContext("2d");
@@ -150,7 +150,7 @@ class Canvas {
 
         // Display the image on the canvas
         this.ctx.save();
-        this.translate(x - width / 2, y - height / 2);
+        this.translate(position.x - width / 2, position.y - height / 2);
 
         this.ctx.translate(width / 2 * this.zoom, height / 2 * this.zoom); // Translate to the image's center
         this.ctx.rotate(alpha * (Math.PI / 180)); // Convert degrees to radians
@@ -160,19 +160,24 @@ class Canvas {
         this.ctx.restore();
     }
 
-    drawPlanet(image, sx, sy, sWidth, sHeight, x, y, width, height) {
-        if (this.zoom * width > 12) {
-            this.drawImage(image, sx, sy, sWidth, sHeight, x, y, width, height);
+    drawPlanet(image, sx, sy, sWidth, sHeight, position, radius) {
+        if ((Math.abs(position.x - this.focus.position.x) - radius) * this.zoom > this.width / 2) return; //Only render on screen planets
+        if ((Math.abs(position.y - this.focus.position.y) - radius) * this.zoom > this.height / 2) return;
+
+        console.log("shown");
+
+        if (this.zoom * radius > 6) {
+            this.drawImage(image, sx, sy, sWidth, sHeight, position, radius * 2, radius * 2);
             return
         }
-        this.fillCircle(x, y, 12 / 2 / this.zoom); //Fix this
+        this.fillCircle(position.x, position.y, 6 / this.zoom); //Fix this
     }
 
-    drawRocket(image, sx, sy, sWidth, sHeight, x, y, width, height, alpha) {
+    drawRocket(image, sx, sy, sWidth, sHeight, position, width, height, alpha) {
         if (this.zoom > 0.7) {
-            this.drawImage(image, sx, sy, sWidth, sHeight, x, y, width, height, alpha);
+            this.drawImage(image, sx, sy, sWidth, sHeight, position, width, height, alpha);
             return;
         }
-        this.drawSymbolRocket(x, y, width / 1.5, height / 2, alpha);
+        this.drawSymbolRocket(position, width / 1.5, height / 2, alpha);
     }
 }

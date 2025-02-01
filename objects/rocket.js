@@ -30,7 +30,7 @@ class Rocket extends GravitationalObject {
             if (this.throttle < 0) this.throttle = 0;
         }
         if (this.keyMap[16]) {
-            this.throttle += 0.001;w
+            this.throttle += 0.001;
             if (this.throttle > 1) this.throttle = 1;
         }
         if (this.keyMap[87]) this.accelerate(20 * this.throttle);
@@ -51,7 +51,7 @@ class Rocket extends GravitationalObject {
 
         if (!this.landed) this.trajectory.draw();
         canvas.setFillColor(this.color);
-        canvas.drawRocket(this.image, 11, 5, 20, 49, this.position.x, this.position.y, this.radius / 49 * 20 * 2, this.radius * 2, this.direction + 90);
+        canvas.drawRocket(this.image, 11, 5, 20, 49, this.position, this.radius / 49 * 20 * 2, this.radius * 2, this.direction + 90);
     }
 
     drawStats() {

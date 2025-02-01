@@ -33,7 +33,7 @@ class Trajectory {
         if (this.focus == null) return;
         this.calculate();
         canvas.setLineColor("#FFFFFF");
-        if (this.e.magnitude() < 1) canvas.drawOrbit(this.focus.position.x, this.focus.position.y, this.c, this.a, this.b, this.e.angle());
-        else canvas.drawHyperbola(this.focus.position.x, this.focus.position.y, this.a, this.b, this.c, this.e.angle());
+        if (this.e.magnitude() < 1) canvas.drawOrbit(this.focus.position, this.c, this.a, this.b, this.e.angle());
+        else canvas.drawHyperbola(this.focus.position, this.a, this.b, this.c, this.e.angle());
     }
 }
