@@ -12,6 +12,8 @@ class Canvas {
         this.ctx.canvas.width = this.width;
         this.ctx.canvas.height = this.height;
 
+        this.imageCache = { canvas: null, lastX: null, lastY: null };
+
         document.onwheel = this.changeZoom.bind(this);
     }
 
@@ -72,7 +74,7 @@ class Canvas {
     }
 
     drawText(x, y, text, a) {
-        this.ctx.font = a + "px Georgia";
+        this.ctx.font = a + "px Arial";
         this.ctx.fillText(text, x, y);
     }
 
@@ -142,58 +144,33 @@ class Canvas {
     }
 
     drawImage(image, sx, sy, sWidth, sHeight, position, width, height, alpha = 0) {
-        // Calculate visible area
-        const canvasLeft = this.focus.position.x - this.width / 2 / this.zoom;
-        const canvasTop = this.focus.position.y - this.height / 2 / this.zoom;
-        const canvasRight = this.focus.position.x + this.width / 2 / this.zoom;
-        const canvasBottom = this.focus.position.y + this.height / 2 / this.zoom;
-
-        const imgLeft = position.x - width / 2;
-        const imgTop = position.y - height / 2;
-        const imgRight = imgLeft + width;
-        const imgBottom = imgTop + height;
-
-        // Find intersection of image and screen
-        const visibleLeft = Math.max(imgLeft, canvasLeft);
-        const visibleTop = Math.max(imgTop, canvasTop);
-        const visibleRight = Math.min(imgRight, canvasRight);
-        const visibleBottom = Math.min(imgBottom, canvasBottom);
-
-        const visibleWidth = visibleRight - visibleLeft;
-        const visibleHeight = visibleBottom - visibleTop;
-
-        if (visibleWidth <= 0 || visibleHeight <= 0) return;
-
-        // Convert to source image coordinates
-        const srcX = sx + (visibleLeft - imgLeft) * (sWidth / width);
-        const srcY = sy + (visibleTop - imgTop) * (sHeight / height);
-        const srcW = visibleWidth * (sWidth / width);
-        const srcH = visibleHeight * (sHeight / height);
-
         // Draw and scale the image on a temporary canvas
         const tempCanvas = document.createElement("canvas");
         const tempCtx = tempCanvas.getContext("2d");
 
-        tempCanvas.width = visibleWidth * this.zoom;
-        tempCanvas.height = visibleHeight * this.zoom;
+        tempCanvas.width = width * this.zoom;
+        tempCanvas.height = height * this.zoom;
 
         tempCtx.imageSmoothingEnabled = false;
 
-        tempCtx.drawImage(image, srcX, srcY, srcW, srcH, 0, 0, tempCanvas.width, tempCanvas.height);
+        tempCtx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, tempCanvas.width, tempCanvas.height); // Display the image on the canvas
 
         this.ctx.save();
 
-        this.translate(visibleLeft, visibleTop);
+        this.translate(position.x - width / 2, position.y - height / 2);
 
-        this.ctx.translate(visibleWidth / 2 * this.zoom, visibleHeight / 2 * this.zoom);
-        this.ctx.rotate(alpha * (Math.PI / 180));
-        this.ctx.translate(-visibleWidth / 2 * this.zoom, -visibleHeight / 2 * this.zoom);
+        this.ctx.translate(width / 2 * this.zoom, height / 2 * this.zoom); // Translate to the image's center
+        this.ctx.rotate(alpha * (Math.PI / 180)); // Convert degrees to radians
+        this.ctx.translate(-width / 2 * this.zoom, -height / 2 * this.zoom); // Translate back
 
         this.ctx.drawImage(tempCanvas, 0, 0);
         this.ctx.restore();
     }
 
     drawPlanet(image, sx, sy, sWidth, sHeight, position, radius) {
+        if ((Math.abs(position.x - this.focus.position.x) - radius) * this.zoom > this.width / 2) return; //Only render on screen planets
+        if ((Math.abs(position.y - this.focus.position.y) - radius) * this.zoom > this.height / 2) return;
+        
         if (this.zoom * radius > 6) {
             this.drawImage(image, sx, sy, sWidth, sHeight, position, radius * 2, radius * 2);
             return
