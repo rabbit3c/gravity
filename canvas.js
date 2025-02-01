@@ -45,10 +45,10 @@ class Canvas {
         this.ctx.translate(x, y);
     }
 
-    translateScale(x, y) {
+    translateScale(position) {
         this.scale();
-        x += (this.width / 2 / this.zoom - this.focus.position.x); // calculate coordinates so that the focus object is in the center
-        y += (this.height / 2 / this.zoom - this.focus.position.y);
+        const x = position.x + (this.width / 2 / this.zoom - this.focus.position.x); // calculate coordinates so that the focus object is in the center
+        const y = position.y + (this.height / 2 / this.zoom - this.focus.position.y);
         this.ctx.translate(x, y);
     }
 
@@ -79,7 +79,7 @@ class Canvas {
     drawOrbit(position, c, a, b, alpha) {
         alpha *= Math.PI / 180;
         this.ctx.save();
-        this.translateScale(position.x, position.y);
+        this.translateScale(position);
         this.ctx.rotate(alpha + Math.PI);
         this.setFillColor("#00FFFF");
         this.drawMarker(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha) + a, c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), "Apogee");
@@ -99,7 +99,7 @@ class Canvas {
         let my = - c.x * Math.sin(-alpha) - c.y * Math.cos(-alpha);
 
         this.ctx.save();
-        this.translateScale(position.x, position.y);
+        this.translateScale(position);
         this.ctx.rotate(alpha);
 
         this.setFillColor("#FFFF00");
@@ -127,9 +127,9 @@ class Canvas {
         this.drawText(x + 5 / this.zoom, y, text, 8 / this.zoom);
     }
 
-    fillCircle(x, y, a) {
+    fillCircle(position, a) {
         this.ctx.save();
-        this.translateScale(x, y);
+        this.translateScale(position);
         this.ctx.beginPath();
         this.ctx.arc(0, 0, a, 0, Math.PI * 2, true);
         this.ctx.closePath();
@@ -170,7 +170,7 @@ class Canvas {
             this.drawImage(image, sx, sy, sWidth, sHeight, position, radius * 2, radius * 2);
             return
         }
-        this.fillCircle(position.x, position.y, 6 / this.zoom); //Fix this
+        this.fillCircle(position, 6 / this.zoom); //Fix this
     }
 
     drawRocket(image, sx, sy, sWidth, sHeight, position, width, height, alpha) {

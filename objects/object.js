@@ -55,6 +55,6 @@ class GravitationalObject {
 
     draw() {
         canvas.setFillColor(this.color);
-        canvas.fillCircle(this.position.x, this.position.y, this.radius);
+        canvas.fillCircle(this.position, this.radius);
     }
 }
