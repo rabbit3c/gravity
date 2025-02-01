@@ -33,7 +33,7 @@ class Rocket extends GravitationalObject {
             this.throttle += 0.001;
             if (this.throttle > 1) this.throttle = 1;
         }
-        if (this.keyMap[87]) this.accelerate(20 * this.throttle);
+        if (this.keyMap[87]) this.accelerate(100e-4 * this.throttle);
 
         super.calculate(objects);
     }
@@ -56,7 +56,7 @@ class Rocket extends GravitationalObject {
 
     drawStats() {
         canvas.setFillColor("#FFFFFF");
-        canvas.drawText(10, 50, "Throttle: " + this.throttle.toFixed(2), 15);
-        canvas.drawText(10, 80, `Velocity: ${(this.velocity.relative(this.trajectory.focus.velocity).magnitude() * 100).toFixed(0)} m/s`, 15);
+        canvas.drawText(10, 80, "Throttle: " + this.throttle.toFixed(2), 15);
+        canvas.drawText(10, 110, `Velocity: ${(this.velocity.relative(this.trajectory.focus.velocity).magnitude() * 1e4).toFixed(0)} m/s`, 15);
     }
 }

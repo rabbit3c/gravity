@@ -1,6 +1,6 @@
 class Moon extends GravitationalObject {
     constructor (x, y, vx, vy) {
-        super(7.35e14, 1.74e2, "#5970A8", x, y, vx, vy);
+        super(7.35e10, 1.74e2, "#5970A8", x, y, vx, vy);
 
         this.trajectory = new Trajectory(this);
 
