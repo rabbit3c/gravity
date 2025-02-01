@@ -14,6 +14,7 @@ class Rocket extends GravitationalObject {
     }
 
     keylogger(e) {
+        console.log(e.keyCode);
         this.keyMap[e.keyCode] = e.type == "keydown";
     }
 
@@ -34,6 +35,9 @@ class Rocket extends GravitationalObject {
             if (this.throttle > 1) this.throttle = 1;
         }
         if (this.keyMap[87]) this.accelerate(100e-4 * this.throttle);
+
+        if (this.keyMap[38]) canvas.zoom *= (1.003);
+        if (this.keyMap[40]) canvas.zoom /= (1.003);
 
         super.calculate(objects);
     }
