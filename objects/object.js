@@ -25,8 +25,8 @@ class GravitationalObject {
                     distanceAfter.add(this.velocity.relative(g.velocity));
 
                     if (distance.magnitude() >= distanceAfter.magnitude()) { // Check if movingw away
-                        if (this.velocity.relative(g.velocity).magnitude() * 1e4 > 1000) { //Check if rocket should explode
-                            this.explosion = new Explosion(this.position.x, this.position.y + 1, 2000);
+                        if (this.velocity.relative(g.velocity).magnitude() * 1e4 > 200) { //Check if rocket should explode
+                            this.explosion = new Explosion(this.position.x, this.position.y, 2000);
                         }
 
                         this.velocity = g.velocity.copy();
@@ -54,7 +54,7 @@ class GravitationalObject {
     }
 
     draw() {
-        canvas.setFillColor(this.color);
-        canvas.fillCircle(this.position, this.radius);
+        view.setFillColor(this.color);
+        view.fillCircle(this.position, this.radius);
     }
 }

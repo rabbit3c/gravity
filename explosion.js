@@ -3,11 +3,11 @@ class Explosion {
         this.objects = [];
 
         for (let i = 0; i < n; i++) {
-            let v = (Math.random() * 5) ** 4;
+            let v = ((Math.random() / 2) ** 4);
             let angle = Math.random() * Math.PI * 2;
             let velocity = Vector.create(v, angle);
 
-            let r = 1 + Math.random();
+            let r = (1 + Math.random()) / 2000;
 
             this.objects.push(new GravitationalObject(1e-11, r, this.getColor(v), x, y, velocity.x, velocity.y));
         }
@@ -26,7 +26,7 @@ class Explosion {
     }
 
     getColor(v) {
-        let normalizedV = Math.min(v / (5 ** 4), 1);
+        let normalizedV = Math.min(v * (2 ** 4), 1);
 
         let r = 255;
         let g = Math.floor(150 * (1 - normalizedV) + 50);

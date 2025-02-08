@@ -1,28 +1,29 @@
-const canvas = new Canvas()
-const time = new Time()
+const view = new View();
+
+const time = new Time();
 
 const earth = new Earth(0, 0, 0, 0);
 const moon = new Moon(-3.85e4, 0, 0, 1.02e-1);
-const rocket = new Rocket(0, -6.37e2 - 6, 0, 0);
-//g2 = new GravitationalObject(10000, 10, "#00FF00", 150, 500, 0, 37)
-//g3 = new GravitationalObject(0.001, 5, "#FF0000", 135, 500, 0, 39)
+const rocket = new Rocket(0, -6.37e2 - 0.0025, 0, 0);
 
-canvas.setCenter(rocket);
+view.detailView.setCenter(rocket);
+view.mapView.setCenter(rocket);
 
-let objects = [moon, earth, rocket];
+let objects = [moon, earth];
 
 function tick() {
-    canvas.clearScreen();
     rocket.calculate(objects);
     moon.calculate(objects);
     time.increase();
 }
 
 function draw() {
-    canvas.clearScreen();
-    rocket.draw();
-    moon.draw();
+    view.clearScreen();
+    rocket.drawTrajectory();
     earth.draw();
+    moon.draw();
+    rocket.draw();
+    earth.drawSurfaceObjects();
     rocket.drawStats();
     time.draw();
 

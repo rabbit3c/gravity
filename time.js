@@ -40,27 +40,26 @@ class Time {
         let hours = Math.floor((this.time / 3600) % 24);
         let days = Math.floor(this.time / 86400);
 
-        canvas.setFillColor("#222233");
-        canvas.fillRect(0, 0, 50 * this.options.length + 15, 36);
+        view.setFillColor("#222233");
+        view.fillRect(0, 0, 50 * this.options.length + 15, 36);
 
         for (let i = 0; i < this.options.length; i++) {
-            if (this.options[i] == this.timewarp()) canvas.setFillColor("#111144");
-            else canvas.setFillColor("#111122");
+            if (this.options[i] == this.timewarp()) view.setFillColor("#111144");
+            else view.setFillColor("#111122");
 
-            canvas.fillRect(10 + i * 50, 8, 45, 20);
+            view.fillRect(10 + i * 50, 8, 45, 20);
 
-            canvas.setFillColor("#FFFFFF");
-            canvas.drawText(15 + i * 50, 21, this.options[i], 10);
+            view.setFillColor("#FFFFFF");
+            view.drawText(15 + i * 50, 21, this.options[i], 10);
         }
 
-        canvas.setFillColor("#222233");
-        canvas.fillRect(0, 36, 265, 38);
+        view.setFillColor("#222233");
+        view.fillRect(0, 36, 265, 38);
 
-        canvas.setFillColor("#111122");
-        canvas.fillRect(10, 36, 245, 30);
+        view.setFillColor("#111122");
+        view.fillRect(10, 36, 245, 30);
 
-        canvas.setFillColor("#FFFFFF");
-        canvas.drawText(20, 56, `T+ ${days} d ${hours} h ${minutes} min ${seconds} s`, 15);
-        //canvas.drawText(10, 50, "Timewarp: " + this.timewarp(), 15);
+        view.setFillColor("#FFFFFF");
+        view.drawText(20, 56, `T+ ${days} d ${hours} h ${minutes} min ${seconds} s`, 15);
     }
 }

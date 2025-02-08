@@ -10,7 +10,13 @@ class Moon extends GravitationalObject {
 
     draw() {
         this.trajectory.draw();
-        canvas.setFillColor(this.color);
-        canvas.drawPlanet(this.image, 97, 97, 29, 29, this.position, this.radius);
+
+        view.setFillColor(this.color);
+        if (view.showDetailView) {
+            const distance = view.detailView.focus.distance().magnitude() - this.radius;
+            view.detailView.drawSurface(distance, this.color);
+            return;
+        }
+        view.drawPlanet(this.image, 97, 97, 29, 29, this.position, this.radius);
     }
 }

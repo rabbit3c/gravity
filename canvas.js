@@ -1,6 +1,11 @@
 class Canvas {
-    constructor() {
-        this.zoom = 1;
+    constructor(zoom, minZoom, maxZoom, facingAway) {
+        this.zoom = zoom;
+        this.minZoom = minZoom;
+        this.maxZoom = maxZoom;
+
+        this.facingAway = facingAway;
+
         this.focus = null;
 
         this.width = window.innerWidth;
@@ -11,16 +16,22 @@ class Canvas {
 
         this.ctx.canvas.width = this.width;
         this.ctx.canvas.height = this.height;
-
-        this.imageCache = { canvas: null, lastX: null, lastY: null };
-
-        document.onwheel = this.changeZoom.bind(this);
     }
 
-    changeZoom(e) {
-        this.zoom *= (1 + e.deltaY * 0.0003);
-        if (this.zoom < 0.001) this.zoom = 0.001;
-        if (this.zoom > 10) this.zoom = 10;
+    changeZoom(n) {
+        this.zoom *= (1 + n * 0.0003);
+        if (this.zoom < this.minZoom) this.zoom = this.minZoom;
+        if (this.zoom > this.maxZoom) this.zoom = this.maxZoom;
+    }
+
+    angle(alpha) {
+        return alpha - this.angleUp();
+    }
+
+    angleUp() {
+        if (!this.facingAway) return 0;
+        let vector = this.focus.distance();
+        return vector.angle() + 90;
     }
 
     setCenter(center) {
@@ -59,15 +70,15 @@ class Canvas {
     }
 
     drawSymbolRocket(position, a, h, alpha) {
-        let x1 = 0.5 * a;
-        let x2 = - 0.5 * a;
+        let y1 = 0.5 * a;
+        let y2 = - 0.5 * a;
         this.ctx.save();
         this.translate(position.x, position.y);
         this.ctx.rotate(alpha * Math.PI / 180);
         this.ctx.beginPath();
-        this.ctx.moveTo(x1, h / 8 * 3);
-        this.ctx.lineTo(x2, h / 8 * 3);
-        this.ctx.lineTo(0, - h / 8 * 5);
+        this.ctx.moveTo(-h / 8 * 3, y1);
+        this.ctx.lineTo(-h / 8 * 3, y2);
+        this.ctx.lineTo(h / 8 * 5, 0);
         this.ctx.closePath();
         this.ctx.fill();
         this.ctx.restore();
@@ -144,6 +155,11 @@ class Canvas {
     }
 
     drawImage(image, sx, sy, sWidth, sHeight, position, width, height, alpha = 0) {
+        if ((Math.abs(position.x - this.focus.position.x) - width) * this.zoom > this.width / 2) return; //Only render on screen images
+        if ((Math.abs(position.y - this.focus.position.y) - height) * this.zoom > this.height / 2) return;
+
+        alpha = this.angle(alpha);
+
         // Draw and scale the image on a temporary canvas
         const tempCanvas = document.createElement("canvas");
         const tempCtx = tempCanvas.getContext("2d");
@@ -160,29 +176,91 @@ class Canvas {
         this.translate(position.x - width / 2, position.y - height / 2);
 
         this.ctx.translate(width / 2 * this.zoom, height / 2 * this.zoom); // Translate to the image's center
-        this.ctx.rotate(alpha * (Math.PI / 180)); // Convert degrees to radians
+        this.ctx.rotate(alpha * Math.PI / 180); // Convert degrees to radians
         this.ctx.translate(-width / 2 * this.zoom, -height / 2 * this.zoom); // Translate back
 
         this.ctx.drawImage(tempCanvas, 0, 0);
         this.ctx.restore();
     }
 
+    drawObjects(image, positions, width, height, distance, b) {
+        const tempCanvas = document.createElement("canvas");
+        const tempCtx = tempCanvas.getContext("2d");
+
+        tempCanvas.width = width * this.zoom;
+        tempCanvas.height = height * this.zoom;
+
+        tempCtx.imageSmoothingEnabled = false;
+
+        tempCtx.drawImage(image, 0, 0, width * this.zoom, height * this.zoom);
+
+        for (let position of positions) {
+            let x = this.width / 2 + this.zoom * (position.x - b % 0.2 - 0.4 - width / 2);
+            let y = this.height / 2 + this.zoom * (position.y + distance - height / 2);
+
+            for (let i = 0; i < 4; i++) {
+                this.ctx.drawImage(tempCanvas, x, y);
+                x += this.zoom * 0.2;
+            }
+        }
+    }
+
     drawPlanet(image, sx, sy, sWidth, sHeight, position, radius) {
-        if ((Math.abs(position.x - this.focus.position.x) - radius) * this.zoom > this.width / 2) return; //Only render on screen planets
-        if ((Math.abs(position.y - this.focus.position.y) - radius) * this.zoom > this.height / 2) return;
-        
         if (this.zoom * radius > 6) {
             this.drawImage(image, sx, sy, sWidth, sHeight, position, radius * 2, radius * 2);
             return
         }
-        this.fillCircle(position, 6 / this.zoom); //Fix this
+        this.fillCircle(position, 6 / this.zoom);
     }
 
-    drawRocket(image, sx, sy, sWidth, sHeight, position, width, height, alpha) {
-        if (this.zoom > 0.7) {
-            this.drawImage(image, sx, sy, sWidth, sHeight, position, width, height, alpha);
-            return;
-        }
-        this.drawSymbolRocket(position, width / 1.5, height / 2, alpha);
+    drawSurface(distance, color) {
+        const y = this.height / 2 + distance * this.zoom;
+        if (y > this.height) return;
+
+        this.setFillColor(color);
+        this.fillRect(0, y, this.width, this.height / 2);
+    }
+
+    drawAtmosphere(distance, scale) {
+        let x = 1 - Math.exp(- distance / scale);
+
+        const r = 10 * (1 - x) + 5 * x;
+        const g = 190 * (1 - x) + 15 * x;
+        const b = 250 * (1 - x) + 30 * x;
+        
+        this.setFillColor(`rgb(${r}, ${g}, ${b})`)
+        this.fillRect(0, 0, this.width, this.height);
+    }
+
+    drawArrow(x, y, n, alpha) {
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        this.ctx.rotate(alpha * Math.PI / 180);
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, 0);
+        this.ctx.lineTo(-2*n, -n);
+        this.ctx.lineTo(-2*n, n);
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.ctx.restore();
+    }  
+
+    drawVelocityArrow(velocity) {
+        if (velocity.magnitude() < 1e-8) return;
+        velocity = velocity.normalize();
+
+        const alpha = (this.angleUp()) * Math.PI / 180;
+
+        const x = Math.cos(-alpha) * velocity.x - Math.sin(-alpha) * velocity.y;
+        const y = Math.sin(-alpha) * velocity.x + Math.cos(-alpha) * velocity.y;
+
+        this.setLineColor("#FFFFFF");
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.width / 2, this.height / 2);
+        this.ctx.lineTo(this.width / 2 + x * 150, this.height / 2 + y * 150);
+        this.ctx.stroke();
+
+        this.setFillColor("#FFFFFF");
+        this.drawArrow(this.width / 2 + x * 150, this.height / 2 + y * 150, 8, velocity.angle() - alpha / Math.PI * 180);
     }
 }

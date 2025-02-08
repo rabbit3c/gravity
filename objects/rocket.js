@@ -1,11 +1,11 @@
 class Rocket extends GravitationalObject {
     constructor(x, y, vx, vy, focus) {
-        super(1, 12, "#FF0000", x, y, vx, vy);
-        this.direction = 270;
+        super(1, 5e-3, "#FF0000", x, y, vx, vy); //Rocket has radius 50m so 100m high
+        this.direction = -90;
         this.keyMap = { 65: false, 68: false, 87: false };
         this.trajectory = new Trajectory(this, focus);
         this.throttle = 1;
-        this.landed = true;
+        this.landed = false;
 
         this.image = new Image();
         this.image.src = "images/rocket.png";
@@ -14,8 +14,15 @@ class Rocket extends GravitationalObject {
     }
 
     keylogger(e) {
-        console.log(e.keyCode);
         this.keyMap[e.keyCode] = e.type == "keydown";
+    }
+
+    relativeVelocity() {
+        return this.velocity.relative(this.trajectory.focus.velocity);
+    }
+
+    distance() {
+        return this.position.distance(this.trajectory.focus.position);
     }
 
     calculate(objects) {
@@ -36,13 +43,14 @@ class Rocket extends GravitationalObject {
         }
         if (this.keyMap[87]) this.accelerate(100e-4 * this.throttle);
 
-        if (this.keyMap[38]) canvas.zoom *= (1.003);
-        if (this.keyMap[40]) canvas.zoom /= (1.003);
+        if (this.keyMap[38]) views.changeZoom(5);
+        if (this.keyMap[40]) views.changeZoom(-5);
 
         super.calculate(objects);
     }
 
     accelerate(value) {
+        if (time.timewarp() > 50) return;
         let vector = Vector.create(value * time.dt(), this.direction * Math.PI / 180);
         this.velocity.add(vector);
     }
@@ -53,55 +61,58 @@ class Rocket extends GravitationalObject {
             return;
         }
 
+        view.setFillColor(this.color);
+        view.drawRocket(this.image, 11, 5, 20, 49, this.position, this.radius / 49 * 20 * 2, this.radius * 2, this.direction, this.relativeVelocity());
+    }
+
+    drawTrajectory() {
         if (!this.landed) this.trajectory.draw();
-        canvas.setFillColor(this.color);
-        canvas.drawRocket(this.image, 11, 5, 20, 49, this.position, this.radius / 49 * 20 * 2, this.radius * 2, this.direction + 90);
     }
 
     drawStats() {
         // Draw Throttle
-        canvas.setFillColor("#222233");
-        canvas.fillRect(0, canvas.height - 220, 60, 220);
+        view.setFillColor("#222233");
+        view.fillRect(0, view.height - 220, 60, 220);
 
-        canvas.setFillColor("#111122");
-        canvas.fillRect(10, canvas.height - 180 - 10, 40, 180);
+        view.setFillColor("#111122");
+        view.fillRect(10, view.height - 180 - 10, 40, 180);
 
-        canvas.setFillColor("#FFFFFF");
-        canvas.drawText(10, canvas.height - 200, "Throttle", 12);
-        canvas.fillRect(10, canvas.height - this.throttle * 180 - 10, 40, this.throttle * 180);
+        view.setFillColor("#FFFFFF");
+        view.drawText(10, view.height - 200, "Throttle", 12);
+        view.fillRect(10, view.height - this.throttle * 180 - 10, 40, this.throttle * 180);
 
         // Draw velocity
-        canvas.setFillColor("#222233");
-        canvas.fillRect(60, canvas.height - 60, 200, 60);
+        view.setFillColor("#222233");
+        view.fillRect(60, view.height - 60, 200, 60);
 
-        canvas.setFillColor("#111122");
-        canvas.fillRect(60, canvas.height - 50, 190, 40);
+        view.setFillColor("#111122");
+        view.fillRect(60, view.height - 50, 190, 40);
 
-        canvas.setFillColor("#FFFFFF");
-        canvas.drawText(70, canvas.height - 22, `${(this.velocity.relative(this.trajectory.focus.velocity).magnitude() * 1e4).toFixed(0)} m/s`, 20);
+        view.setFillColor("#FFFFFF");
+        view.drawText(70, view.height - 22, `${(this.relativeVelocity().magnitude() * 1e4).toFixed(0)} m/s`, 20);
 
 
         // Draw height
-        canvas.setFillColor("#222233");
-        canvas.fillRect(canvas.width / 2 - 120, 0, 240, 70);
+        view.setFillColor("#222233");
+        view.fillRect(view.width / 2 - 120, 0, 240, 70);
 
-        canvas.setFillColor("#111122");
-        canvas.fillRect(canvas.width / 2 - 110, 10, 220, 50);
-        canvas.setFillColor("#FFFFFF");
+        view.setFillColor("#111122");
+        view.fillRect(view.width / 2 - 110, 10, 220, 50);
+        view.setFillColor("#FFFFFF");
 
-        let distance = this.position.distance(this.trajectory.focus.position).magnitude();
+        let distance = this.distance().magnitude();
         distance -= Math.abs(this.trajectory.focus.radius + this.radius / 2);
         distance *= 1e4
 
         if (distance > 10000) {
             distance /= 1000;
 
-            canvas.drawText(canvas.width / 2 - 95, 50, distance.toFixed(0), 40);
-            canvas.drawText(canvas.width / 2 + 45, 50, "km", 40);
+            view.drawText(view.width / 2 - 95, 50, distance.toFixed(0), 40);
+            view.drawText(view.width / 2 + 45, 50, "km", 40);
         }
         else {
-            canvas.drawText(canvas.width / 2 - 95, 50, distance.toFixed(0), 40);
-            canvas.drawText(canvas.width / 2 + 65, 50, "m", 40);
+            view.drawText(view.width / 2 - 95, 50, distance.toFixed(0), 40);
+            view.drawText(view.width / 2 + 65, 50, "m", 40);
         }
     }
 }
