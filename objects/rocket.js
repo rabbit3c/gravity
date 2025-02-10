@@ -43,8 +43,8 @@ class Rocket extends GravitationalObject {
         }
         if (this.keyMap[87]) this.accelerate(100e-4 * this.throttle);
 
-        if (this.keyMap[38]) views.changeZoom(5);
-        if (this.keyMap[40]) views.changeZoom(-5);
+        if (this.keyMap[38]) view.changeZoom(10);
+        if (this.keyMap[40]) view.changeZoom(-10);
 
         super.calculate(objects);
     }
