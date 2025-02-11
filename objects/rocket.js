@@ -6,6 +6,7 @@ class Rocket extends GravitationalObject {
         this.trajectory = new Trajectory(this, focus);
         this.throttle = 1;
         this.landed = false;
+        this.burning = false;
 
         this.image = new Image();
         this.image.src = "images/rocket.png";
@@ -47,7 +48,10 @@ class Rocket extends GravitationalObject {
             if (this.throttle > 1) this.throttle = 1;
         }
         if (this.keyMap[87]) this.accelerate(100e-4 * this.throttle);
-        else time.setMaxTimewarp();
+        else {
+            this.burning = false;
+            time.setMaxTimewarp();
+        }
 
         if (this.keyMap[38]) view.changeZoom(10);
         if (this.keyMap[40]) view.changeZoom(-10);
@@ -58,6 +62,7 @@ class Rocket extends GravitationalObject {
     accelerate(value) {
         if (time.timewarp() >= 50) return;
 
+        this.burning = true;
         time.setMaxTimewarp(10);
         let vector = Vector.create(value * time.dt(), this.direction * Math.PI / 180);
         this.velocity.add(vector);
@@ -70,7 +75,13 @@ class Rocket extends GravitationalObject {
         }
 
         view.setFillColor(this.color);
-        view.drawRocket(this.image, 11, 5, 20, 49, this.position, this.radius / 49 * 20 * 2, this.radius * 2, this.direction, this.relativeVelocity());
+
+        if (this.burning) {
+            view.drawRocket(this.image, 11, 5, 20, 49, this.position, this.radius / 49 * 20 * 2, this.radius * 2, this.direction, this.relativeVelocity());
+        }
+        else {
+            view.drawRocket(this.image, 74, 184, 20, 49, this.position, this.radius / 49 * 20 * 2, this.radius * 2, this.direction, this.relativeVelocity());
+        }
     }
 
     drawTrajectory() {
