@@ -4,6 +4,7 @@ class Time {
         this.baseTime = 0.005;
         this.options = [1, 2, 5, 10, 50, 100, 1000, 10000, 100000];
         this.index = 0;
+        this.max = this.options.length - 1;
         document.addEventListener("keydown", this.changeTimewarp.bind(this));
     }
 
@@ -13,6 +14,7 @@ class Time {
 
     increase() {
         this.time += this.dt();
+        this.adjustTimewarp();
     }
 
     timewarp() {
@@ -23,7 +25,8 @@ class Time {
         switch (e.keyCode) {
             case 190:
                 this.index += 1;
-                if (this.index >= this.options.length) this.index = this.options.length - 1;
+                const maxIndex = this.maxIndex();
+                if (this.index > maxIndex) this.index = maxIndex;
                 break
             case 188:
                 this.index -= 1;
@@ -32,6 +35,36 @@ class Time {
             default:
                 break
         }
+    }
+
+    timewarpToIndex(timewarp) {
+        let index = 0;
+        for (let i = 0; i < this.options.length; i++) {
+            if (this.options[i] > timewarp) break;
+            index = i;
+        }
+        return index;
+    }
+
+    maxTimewarp() {
+        return this.options[this.maxIndex()];
+    }
+
+    maxIndex() {
+        const distance = view.detailView.focus.distanceGround();
+        const maxDistance = this.timewarpToIndex(distance * 10 + 1);
+
+        return Math.min(this.max, maxDistance);
+    }
+
+    setMaxTimewarp(timewarp=this.options[this.options.length - 1]) {
+        this.max = this.timewarpToIndex(timewarp);
+    }
+
+    adjustTimewarp() { //Adjust Timewarp if rocket gets too close to object
+        const maxIndex = this.maxIndex();
+        if (this.index > maxIndex) this.index = maxIndex - 1;
+        if (this.index < 0) this.index = 0;
     }
 
     draw() {
@@ -43,13 +76,21 @@ class Time {
         view.setFillColor("#222233");
         view.fillRect(0, 0, 50 * this.options.length + 15, 36);
 
+        const maxIndex = this.maxIndex();
+
         for (let i = 0; i < this.options.length; i++) {
-            if (this.options[i] == this.timewarp()) view.setFillColor("#111144");
+            if (this.options[i] == this.timewarp()) {
+                if (this.options[i] >= 50) view.setFillColor("#FF0000");
+                else view.setFillColor("#114565");
+            }
             else view.setFillColor("#111122");
 
             view.fillRect(10 + i * 50, 8, 45, 20);
 
-            view.setFillColor("#FFFFFF");
+            if (i > maxIndex) view.setFillColor("#444444");
+            else if (this.options[i] >= 50 && this.options[i] != this.timewarp()) view.setFillColor("#FF4444");
+            else view.setFillColor("#FFFFFF");
+
             view.drawText(15 + i * 50, 21, this.options[i], 10);
         }
 

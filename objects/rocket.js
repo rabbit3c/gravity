@@ -25,6 +25,11 @@ class Rocket extends GravitationalObject {
         return this.position.distance(this.trajectory.focus.position);
     }
 
+    distanceGround() {
+        if (this.trajectory.focus == null) return;
+        return this.distance().magnitude() - this.trajectory.focus.radius;
+    }
+
     calculate(objects) {
         if (this.explosion) {
             this.explosion.calculate(objects);
@@ -42,6 +47,7 @@ class Rocket extends GravitationalObject {
             if (this.throttle > 1) this.throttle = 1;
         }
         if (this.keyMap[87]) this.accelerate(100e-4 * this.throttle);
+        else time.setMaxTimewarp();
 
         if (this.keyMap[38]) view.changeZoom(10);
         if (this.keyMap[40]) view.changeZoom(-10);
@@ -50,7 +56,9 @@ class Rocket extends GravitationalObject {
     }
 
     accelerate(value) {
-        if (time.timewarp() > 50) return;
+        if (time.timewarp() >= 50) return;
+
+        time.setMaxTimewarp(10);
         let vector = Vector.create(value * time.dt(), this.direction * Math.PI / 180);
         this.velocity.add(vector);
     }
@@ -77,7 +85,8 @@ class Rocket extends GravitationalObject {
         view.setFillColor("#111122");
         view.fillRect(10, view.height - 180 - 10, 40, 180);
 
-        view.setFillColor("#FFFFFF");
+        if (time.timewarp() >= 50) view.setFillColor("#606060")
+        else view.setFillColor("#FFFFFF");
         view.drawText(10, view.height - 200, "Throttle", 12);
         view.fillRect(10, view.height - this.throttle * 180 - 10, 40, this.throttle * 180);
 
