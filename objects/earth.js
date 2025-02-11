@@ -13,7 +13,7 @@ class Earth extends GravitationalObject {
     draw() {
         view.setFillColor(this.color);
         if (view.showDetailView) {
-            const distance = view.detailView.focus.distance().magnitude() - this.radius;
+            const distance = view.detailView.focus.position.distance(this.position).magnitude() - this.radius;
             view.detailView.drawAtmosphere(distance, 0.6);
             view.detailView.drawSurface(distance, "#82EF5F");
             return;
