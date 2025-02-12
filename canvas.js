@@ -246,7 +246,7 @@ class Canvas {
     }  
 
     drawVelocityArrow(velocity) {
-        if (velocity.magnitude() < 1e-8) return;
+        if (velocity.magnitude() < 1e-6) return;
         velocity = velocity.normalize();
 
         const alpha = (this.angleUp()) * Math.PI / 180;
