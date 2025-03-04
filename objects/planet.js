@@ -14,7 +14,11 @@ class Planet extends GravitationalObject {
             return;
         }                   
         
-        super.draw();
+        view.setFillColor(this.color);
+        if (view.mapView.zoom * this.radius > 6) {
+            view.fillCircle(this.position, this.radius);
+        }
+        view.fillCircle(this.position, 6 / view.mapView.zoom);
     }
 
     drawTrajectory() {

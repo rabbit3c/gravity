@@ -1,7 +1,7 @@
 class View {
     constructor () {
         this.detailView = new Canvas(10000, 5000, 60000, true);
-        this.mapView = new Canvas(1, 0.00001, 2, false);
+        this.mapView = new Canvas(1, 0.000001, 2, false);
 
         this.width = window.innerWidth;
         this.height = window.innerHeight;
@@ -73,13 +73,13 @@ class View {
         this.currentView().drawPlanet(image, sx, sy, sWidth, sHeight, position, radius);
     }
 
-    drawOrbit(position, c, a, b, alpha) {
+    drawOrbit(position, c, a, b, alpha, showMarkers) {
         if (this.showDetailView) return;
-        this.mapView.drawOrbit(position, c, a, b, alpha);
+        this.mapView.drawOrbit(position, c, a, b, alpha, showMarkers);
     }
 
-    drawHyperbola(position, a, b, c, alpha) {
+    drawHyperbola(position, a, b, c, alpha, showMarkers) {
         if (this.showDetailView) return;
-        this.mapView.drawHyperbola(position, a, b, c, alpha);
+        this.mapView.drawHyperbola(position, a, b, c, alpha, showMarkers);
     }
 }

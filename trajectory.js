@@ -1,11 +1,12 @@
 class Trajectory {
-    constructor (object, focus) {
+    constructor (object, focus, showMarkers=false) {
         this.object = object;
         this.focus = focus;
         this.a = 0;
         this.b = 0;
         this.e = null;
         this.c = null;
+        this.showMarkers = showMarkers;
     }
 
     // https://astronomy.stackexchange.com/questions/49489/how-can-i-calculate-an-orbital-elliptic-trajectory-from-the-velocity-vector 
@@ -33,7 +34,7 @@ class Trajectory {
         if (this.focus == null) return;
         this.calculate();
         view.setLineColor("#FFFFFF");
-        if (this.e.magnitude() < 1) view.drawOrbit(this.focus.position, this.c, this.a, this.b, this.e.angle());
-        else view.drawHyperbola(this.focus.position, this.a, this.b, this.c, this.e.angle());
+        if (this.e.magnitude() < 1) view.drawOrbit(this.focus.position, this.c, this.a, this.b, this.e.angle(), this.showMarkers);
+        else view.drawHyperbola(this.focus.position, this.a, this.b, this.c, this.e.angle(), this.showMarkers);
     }
 }

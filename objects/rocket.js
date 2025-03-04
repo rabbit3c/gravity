@@ -3,7 +3,7 @@ class Rocket extends GravitationalObject {
         super(1, 5e-3, "#FF0000", x, y, vx, vy); //Rocket has radius 50m so 100m high
         this.direction = -90;
         this.keyMap = { 65: false, 68: false, 87: false };
-        this.trajectory = new Trajectory(this, focus);
+        this.trajectory = new Trajectory(this, focus, true);
         this.throttle = 1;
         this.landed = false;
         this.burning = false;
@@ -124,7 +124,13 @@ class Rocket extends GravitationalObject {
         distance -= Math.abs(this.trajectory.focus.radius + this.radius / 2);
         distance *= 1e4
 
-        if (distance > 10000) {
+        if (distance > 10000000000) {
+            distance /= 1000000000;
+
+            view.drawText(view.width / 2 - 95, 50, distance.toFixed(0), 40);
+            view.drawText(view.width / 2 + 45, 50, "Gm", 40);
+        }
+        else if (distance > 10000) {
             distance /= 1000;
 
             view.drawText(view.width / 2 - 95, 50, distance.toFixed(0), 40);

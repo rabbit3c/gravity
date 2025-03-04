@@ -89,22 +89,22 @@ class Canvas {
         this.ctx.fillText(text, x, y);
     }
 
-    drawOrbit(position, c, a, b, alpha) {
+    drawOrbit(position, c, a, b, alpha, showMarkers) {
         alpha *= Math.PI / 180;
         this.ctx.save();
         this.translateScale(position);
         this.ctx.rotate(alpha + Math.PI);
         this.setFillColor("#00FFFF");
-        this.drawMarker(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha) + a, c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), "Apogee");
+        if (showMarkers) this.drawMarker(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha) + a, c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), "Apogee");
         this.setFillColor("#FFFF00");
-        this.drawMarker(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha) - a, c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), "Perigee");
+        if (showMarkers) this.drawMarker(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha) - a, c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), "Perigee");
         this.ctx.beginPath();
         this.ctx.ellipse(c.x * Math.cos(-alpha) - c.y * Math.sin(-alpha), c.x * Math.sin(-alpha) + c.y * Math.cos(-alpha), a, b, 0, 0, 2 * Math.PI); // Affinität für Rotieren
         this.ctx.restore();
         this.ctx.stroke();
     }
 
-    drawHyperbola(position, a, b, c, alpha) {
+    drawHyperbola(position, a, b, c, alpha, showMarkers) {
         alpha *= Math.PI / 180;
 
         let steps = 1000
@@ -116,7 +116,7 @@ class Canvas {
         this.ctx.rotate(alpha);
 
         this.setFillColor("#FFFF00");
-        this.drawMarker(mx + a, my, "Perigee");
+        if (showMarkers) this.drawMarker(mx + a, my, "Perigee");
 
         this.ctx.beginPath();
 
