@@ -1,4 +1,4 @@
-class Earth extends GravitationalObject {
+class Earth extends Planet {
     constructor (x, y, vx, vy) {
         super(5.97e12, 6.37e2, "#0000FF", x, y, vx, vy); //Scale 1 to 10'000 (Mass 1 to 1'000'000'000'000)
 
@@ -11,6 +11,8 @@ class Earth extends GravitationalObject {
     }
 
     draw() {
+        this.drawTrajectory();
+
         view.setFillColor(this.color);
         if (view.showDetailView) {
             const distance = view.detailView.focus.position.distance(this.position).magnitude() - this.radius;
@@ -22,7 +24,7 @@ class Earth extends GravitationalObject {
     }
 
     drawSurfaceObjects() {
-        const distance = view.detailView.focus.distance()
+        const distance = view.detailView.focus.position.distance(this.position);
         const d = distance.magnitude() - this.radius;
         const b = distance.angle() * Math.PI / 180 * this.radius;
 

@@ -1,7 +1,7 @@
 class Trajectory {
-    constructor (object) {
+    constructor (object, focus) {
         this.object = object;
-        this.focus = null;
+        this.focus = focus;
         this.a = 0;
         this.b = 0;
         this.e = null;

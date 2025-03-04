@@ -1,14 +1,15 @@
-class Moon extends GravitationalObject {
+class Moon extends Planet {
     constructor (x, y, vx, vy) {
         super(7.35e10, 1.74e2, "#5970A8", x, y, vx, vy);
 
-        this.trajectory = new Trajectory(this);
-
         this.image = new Image();
         this.image.src = "images/earth_moon.png";
-    }w
+
+        this.trajectory = new Trajectory(this, earth);
+    }
+
     draw() {
-        this.trajectory.draw();
+        this.drawTrajectory();
 
         view.setFillColor(this.color);
         if (view.showDetailView) {

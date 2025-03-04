@@ -19,12 +19,12 @@ class GravitationalObject {
             let distance = this.position.distance(g.position);
             if (distance.magnitude() == 0) continue;
 
-            if (this instanceof Rocket) {
-                if (distance.magnitude() - this.radius / 2 <= g.radius) { // Check for Collision
+            if (this instanceof Rocket) { // Check for Collision
+                if (distance.magnitude() - this.radius / 2 <= g.radius) {
                     let distanceAfter = distance.copy();
                     distanceAfter.add(this.velocity.relative(g.velocity));
 
-                    if (distance.magnitude() >= distanceAfter.magnitude()) { // Check if movingw away
+                    if (distance.magnitude() >= distanceAfter.magnitude()) { // Check if moving away
                         if (this.velocity.relative(g.velocity).magnitude() * 1e4 > 200) { //Check if rocket should explode
                             this.explosion = new Explosion(this.position.x, this.position.y, 2000);
                         }
@@ -43,14 +43,16 @@ class GravitationalObject {
 
             this.velocity.calculate(acceleration);
 
-            if (a > maxA) {
-                maxA = a;
-                strongestObject = g;
+            if (this instanceof Rocket) { // Calculate object which the Rocket is the most attracted to
+                if (a > maxA) {
+                    maxA = a;
+                    strongestObject = g;
+                }
             }
         }
 
         this.position.calculate(this.velocity);
-        if (this.trajectory) this.trajectory.focus = strongestObject;
+        if (this instanceof Rocket) this.trajectory.focus = strongestObject;
     }
 
     draw() {

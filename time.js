@@ -51,6 +51,8 @@ class Time {
     }
 
     maxIndex() {
+        if (view.detailView.focus.landed) return this.max;
+
         const distance = view.detailView.focus.distanceGround();
         const maxDistance = this.timewarpToIndex(distance * 10 + 1);
 

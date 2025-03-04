@@ -1,7 +1,7 @@
 class View {
     constructor () {
         this.detailView = new Canvas(10000, 5000, 60000, true);
-        this.mapView = new Canvas(1, 0.001, 2, false);
+        this.mapView = new Canvas(1, 0.00001, 2, false);
 
         this.width = window.innerWidth;
         this.height = window.innerHeight;
