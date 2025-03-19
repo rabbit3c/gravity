@@ -31,6 +31,7 @@ function tick() {
 
 function draw() {
     view.clearScreen();
+    earth.drawAtmosphere();
     rocket.drawTrajectory();
     sun.draw();
     moon.draw();

@@ -1,5 +1,5 @@
 class Explosion {
-    constructor (x, y, n) {
+    constructor (x, y, n, v_initial) {
         this.objects = [];
 
         for (let i = 0; i < n; i++) {
@@ -9,7 +9,7 @@ class Explosion {
 
             let r = (1 + Math.random()) / 2000;
 
-            this.objects.push(new GravitationalObject(1e-11, r, this.getColor(v), x, y, velocity.x, velocity.y));
+            this.objects.push(new GravitationalObject(1e-11, r, this.getColor(v), x, y, v_initial.x + velocity.x, v_initial.y + velocity.y));
         }
     }
 

@@ -34,7 +34,6 @@ class Rocket extends GravitationalObject {
     calculate(objects) {
         if (this.explosion) {
             this.explosion.calculate(objects);
-            return;
         }
 
         if (this.keyMap[65]) this.direction -= 0.3;

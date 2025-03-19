@@ -26,7 +26,7 @@ class GravitationalObject {
 
                     if (distance.magnitude() >= distanceAfter.magnitude()) { // Check if moving away
                         if (this.velocity.relative(g.velocity).magnitude() * 1e4 > 200) { //Check if rocket should explode
-                            this.explosion = new Explosion(this.position.x, this.position.y, 2000);
+                            this.explosion = new Explosion(this.position.x, this.position.y, 2000, g.velocity);
                         }
 
                         this.velocity = g.velocity.copy();

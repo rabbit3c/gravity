@@ -16,11 +16,17 @@ class Earth extends Planet {
         view.setFillColor(this.color);
         if (view.showDetailView) {
             const distance = view.detailView.focus.position.distance(this.position).magnitude() - this.radius;
-            view.detailView.drawAtmosphere(distance, 0.6);
             view.detailView.drawSurface(distance, "#82EF5F");
             return;
         }                   
         view.drawPlanet(this.planet, 0, 97, 96, 96, this.position, this.radius);
+    }
+
+    drawAtmosphere() {
+        if (view.showDetailView) {
+            const distance = view.detailView.focus.position.distance(this.position).magnitude() - this.radius;
+            view.detailView.drawAtmosphere(distance, 0.6);
+        }
     }
 
     drawSurfaceObjects() {
