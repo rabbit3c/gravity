@@ -11,6 +11,10 @@ class Rocket extends GravitationalObject {
         this.image = new Image();
         this.image.src = "images/rocket.png";
 
+        this.engineAudio = new Audio("audio/engine.mp3");
+        this.engineAudio.loop = true;
+        this.engineAudio.volume = 0.1;
+
         document.onkeydown = document.onkeyup = this.keylogger.bind(this);
     }
 
@@ -49,6 +53,7 @@ class Rocket extends GravitationalObject {
         if (this.keyMap[87]) this.accelerate(100e-4 * this.throttle);
         else {
             this.burning = false;
+            this.engineAudio.pause();
             time.setMaxTimewarp();
         }
 
@@ -60,6 +65,8 @@ class Rocket extends GravitationalObject {
 
     accelerate(value) {
         if (time.timewarp() >= 50) return;
+
+        if (this.burning == false) this.engineAudio.play();
 
         this.burning = true;
         time.setMaxTimewarp(10);

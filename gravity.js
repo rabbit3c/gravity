@@ -56,6 +56,18 @@ function calculatePlanets(objects) {
     }
 }
 
+function playMusic() {
+    const music = new Audio("audio/music.mp3");
+    music.volume = 0.4;
+    music.play();
+
+    document.removeEventListener("click", playMusic);
+    document.removeEventListener("keydown", playMusic);
+}
+
+document.addEventListener("click", playMusic);
+document.addEventListener("keydown", playMusic);
+
 let interval = setInterval(tick, 5);
 
 tick();
